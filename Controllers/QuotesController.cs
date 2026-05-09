@@ -1,12 +1,14 @@
 using CloudCiApi.Dtos;
 using CloudCiApi.Models;
 using CloudCiApi.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CloudCiApi.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class QuotesController : ControllerBase
 {
     private readonly IQuoteStore _store;

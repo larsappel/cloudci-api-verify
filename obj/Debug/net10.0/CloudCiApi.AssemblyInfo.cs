@@ -10,10 +10,11 @@
 using System;
 using System.Reflection;
 
+[assembly: Microsoft.Extensions.Configuration.UserSecrets.UserSecretsIdAttribute("31aca113-bf25-40e5-8daf-161b3f076130")]
 [assembly: System.Reflection.AssemblyCompanyAttribute("CloudCiApi")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+113c50710a9aa1e682b3b32b98c5a62c9a015b13")]
 [assembly: System.Reflection.AssemblyProductAttribute("CloudCiApi")]
 [assembly: System.Reflection.AssemblyTitleAttribute("CloudCiApi")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -44,7 +44,7 @@ jobs:
             -n ca-api-week6 -g rg-api-week6 \
             --query properties.configuration.ingress.fqdn -o tsv)
           for i in {1..20}; do
-            if curl -fsS "https://$FQDN/api/quotes" >/dev/null; then
+            if curl -fsS "https://$FQDN/swagger/index.html" >/dev/null; then
               echo "Smoke test passed."
               exit 0
             fi

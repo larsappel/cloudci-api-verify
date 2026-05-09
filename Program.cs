@@ -1,26 +1,37 @@
 using CloudCiApi.Services;
 
+const string LocalDevCorsPolicy = "LocalDev";
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Singleton — one in-memory store shared across every request.
 builder.Services.AddSingleton<IQuoteStore, InMemoryQuoteStore>();
 
 builder.Services.AddControllers();
 
-// OpenAPI / Swagger surface.
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(LocalDevCorsPolicy, policy =>
+    {
+        policy.WithOrigins("http://localhost:3000")
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
 builder.Services.AddApplicationInsightsTelemetry();
 
 var app = builder.Build();
 
-// Swagger is enabled in BOTH Development AND Production for this course.
-// See the Concept Deep Dive below for the trade-off.
 app.UseSwagger();
 app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
+
+// CORS must come before UseAuthorization() and MapControllers().
+app.UseCors(LocalDevCorsPolicy);
+
 app.UseAuthorization();
 app.MapControllers();
 

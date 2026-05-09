@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Quotes</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 720px;
+           margin: 2rem auto; padding: 0 1rem; }
+    li { margin: 0.75rem 0; }
+    blockquote { margin: 0; font-style: italic; }
+    cite { display: block; margin-top: 0.25rem;
+           font-size: 0.9em; color: #555; }
+    form { margin-top: 2rem; padding-top: 1rem;
+           border-top: 1px solid #ddd; }
+    label { display: block; margin: 0.5rem 0 0.25rem; }
+    input, textarea { width: 100%; padding: 0.4rem; font: inherit; }
+    button { margin-top: 1rem; padding: 0.5rem 1rem; }
+    .error { color: #b00; }
+  </style>
+</head>
+<body>
+  <h1>Quotes</h1>
+  <button id="load">Reload quotes</button>
+  <ul id="quotes"></ul>
+  <p id="status" class="error"></p>
+
+  <form id="create-form">
+    <h2>Add a quote</h2>
+    <label for="author">Author</label>
+    <input id="author" name="author" required maxlength="100">
+    <label for="text">Text</label>
+    <textarea id="text" name="text" required maxlength="500" rows="3"></textarea>
+    <button type="submit">Create</button>
+  </form>
+
+  <script>
+    const API_BASE = "https://ca-api-week6.thankfulsea-21cbf6c4.northeurope.azurecontainerapps.io";
+
+    async function loadQuotes() {
+      const status = document.getElementById("status");
+      const list = document.getElementById("quotes");
+      list.innerHTML = "";
+      status.textContent = "";
+      try {
+        const res = await fetch(`${API_BASE}/api/quotes`);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const quotes = await res.json();
+        for (const q of quotes) {
+          const li = document.createElement("li");
+          li.innerHTML =
+            `<blockquote>"${q.text}"<cite>— ${q.author}</cite></blockquote>`;
+          list.appendChild(li);
+        }
+      } catch (err) {
+        status.textContent =
+          `Failed: ${err.message}. Open DevTools → Console for the real error.`;
+      }
+    }
+
+    document.getElementById("load").addEventListener("click", loadQuotes);
+
+    document.getElementById("create-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const status = document.getElementById("status");
+      status.textContent = "";
+      const body = {
+        author: document.getElementById("author").value,
+        text: document.getElementById("text").value,
+      };
+      try {
+        const res = await fetch(`${API_BASE}/api/quotes`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(body),
+        });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        e.target.reset();
+        await loadQuotes();
+      } catch (err) {
+        status.textContent = `Create failed: ${err.message}.`;
+      }
+    });
+
+    loadQuotes();
+  </script>
+</body>
+</html>
